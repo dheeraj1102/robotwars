@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for RobotWars
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+  RobotWarsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/RobotWars/
+      Handler: RobotWars::RobotWars.Function::FunctionHandler
+      Runtime: dotnet8
+      Architectures:
+        - x86_64
+      MemorySize: 256
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        RobotWars:
+          Type: Api
+          Properties:
+            Path: /robotwars
+            Method: get
+
+Outputs:
+  RobotWarsApi:
+    Description: "API Gateway endpoint URL for Prod stage for RobotWars function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/robotwars/"
+  RobotWarsFunction:
+    Description: "RobotWars Lambda Function ARN"
+    Value: !GetAtt RobotWarsFunction.Arn
+  RobotWarsFunctionIamRole:
+    Description: "Implicit IAM Role created for RobotWars function"
+    Value: !GetAtt RobotWarsFunctionRole.Arn
